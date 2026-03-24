@@ -591,3 +591,238 @@ header h1 {
   transform: scale(1.05);
   box-shadow: 0 4px 16px rgba(255, 215, 0, 0.5);
 }
+
+/* ========== Portrait / Mobile (max-width: 480px) ========== */
+@media (max-width: 480px) {
+  #app {
+    padding: 10px 8px;
+  }
+
+  header h1 {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+  }
+
+  header {
+    margin-bottom: 12px;
+  }
+
+  #stats {
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+
+  #stats span {
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  /* Monster */
+  #monster-area {
+    padding: 12px 10px;
+    margin-bottom: 14px;
+  }
+
+  #monster-name {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+
+  #hp-bar-container {
+    width: 90%;
+    height: 22px;
+    margin-bottom: 10px;
+  }
+
+  #hp-text {
+    font-size: 0.75rem;
+  }
+
+  #monster-sprite {
+    font-size: 3.5rem;
+  }
+
+  .float-number {
+    font-size: 1.2rem;
+  }
+
+  /* Energy */
+  #energy-area {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+
+  #energy-text {
+    font-size: 1.4rem;
+  }
+
+  #draw-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  /* Ascend */
+  #ascend-area {
+    margin-bottom: 10px;
+  }
+
+  #ascend-btn {
+    padding: 10px 16px;
+  }
+
+  .ascend-title {
+    font-size: 0.95rem;
+  }
+
+  .ascend-desc {
+    font-size: 0.7rem;
+  }
+
+  /* Deck */
+  #deck-area {
+    padding: 10px;
+    margin-bottom: 16px;
+  }
+
+  #deck-info {
+    gap: 8px;
+  }
+
+  .pile {
+    min-width: 50px;
+  }
+
+  .pile-count {
+    width: 46px;
+    height: 64px;
+    font-size: 1.2rem;
+  }
+
+  .pile-label {
+    font-size: 0.75rem;
+  }
+
+  .hand-label {
+    font-size: 0.75rem;
+  }
+
+  #hand-cards {
+    gap: 6px;
+    min-height: 90px;
+  }
+
+  /* Cards */
+  .card {
+    width: 80px;
+    min-height: 110px;
+    padding: 6px;
+    border-radius: 8px;
+  }
+
+  .card-name {
+    font-size: 0.65rem;
+  }
+
+  .card-icon {
+    font-size: 1.5rem;
+  }
+
+  .card-desc {
+    font-size: 0.55rem;
+  }
+
+  .card-rarity {
+    font-size: 0.5rem;
+  }
+
+  .card-cost-badge {
+    width: 20px;
+    height: 20px;
+    font-size: 0.6rem;
+    top: -4px;
+    right: -4px;
+  }
+
+  /* Reward overlay */
+  #reward-box {
+    padding: 16px 12px;
+    width: 95%;
+  }
+
+  #reward-box h2 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+
+  #reward-cards {
+    gap: 8px;
+  }
+
+  .reward-card {
+    width: 90px;
+    min-height: 120px;
+  }
+
+  /* Ascend overlay */
+  #ascend-box {
+    padding: 20px 16px;
+    width: 95%;
+  }
+
+  #ascend-box h2 {
+    font-size: 1.4rem;
+  }
+
+  #ascend-summary p {
+    font-size: 0.95rem;
+  }
+
+  .ascend-reward-item {
+    font-size: 1rem;
+  }
+
+  #ascend-confirm-btn {
+    padding: 10px 28px;
+    font-size: 1rem;
+  }
+}
+
+/* ========== Small Portrait (max-width: 360px) ========== */
+@media (max-width: 360px) {
+  #stats {
+    font-size: 0.7rem;
+    gap: 4px;
+  }
+
+  #stats span {
+    padding: 3px 6px;
+  }
+
+  .card {
+    width: 70px;
+    min-height: 95px;
+    padding: 4px;
+  }
+
+  .card-icon {
+    font-size: 1.3rem;
+  }
+
+  .card-desc {
+    display: none;
+  }
+
+  .pile-count {
+    width: 40px;
+    height: 56px;
+    font-size: 1rem;
+  }
+
+  .reward-card {
+    width: 80px;
+    min-height: 100px;
+  }
+}
