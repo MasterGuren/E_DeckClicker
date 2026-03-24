@@ -126,6 +126,7 @@ const game = {
   dmgMultiplier: 1,
   cardsPlayedThisFight: 0,
   handSize: 5,
+  bestWave: 0,
 
   monster: null,
 
@@ -138,7 +139,27 @@ const game = {
   rewardChoices: [],
   isRewardPhase: false,
 
+  // Ascend (prestige)
+  ascendCount: 0,
+  ascendBonusDmg: 0,     // permanent +damage from ascends
+  ascendBonusHand: 0,    // permanent +hand size from ascends
+  ascendMinWave: 5,      // minimum wave to ascend
+
   init() {
+    this.resetRun();
+    this.render();
+  },
+
+  resetRun() {
+    this.wave = 1;
+    this.dmgBonus = 0;
+    this.dmgMultiplier = 1;
+    this.cardsPlayedThisFight = 0;
+    this.baseDamage = 1 + this.ascendBonusDmg;
+    this.handSize = 5 + this.ascendBonusHand;
+    this.hand = [];
+    this.discardPile = [];
+
     const startDeck = [
       ...Array(5).fill("strike"),
       ...Array(3).fill("guard"),
@@ -146,7 +167,6 @@ const game = {
     this.drawPile = this.shuffle([...startDeck]);
     this.spawnMonster();
     this.drawHand();
-    this.render();
   },
 
   shuffle(arr) {
@@ -289,6 +309,46 @@ const game = {
     this.render();
   },
 
+  // ---- Ascend ----
+  canAscend() {
+    return this.wave >= this.ascendMinWave && !this.isRewardPhase;
+  },
+
+  getAscendRewards() {
+    // Rewards scale with how far you got
+    const bonusDmg = Math.floor(this.wave / 5);
+    const bonusHand = this.wave >= 15 ? 1 : 0;
+    return { bonusDmg, bonusHand };
+  },
+
+  startAscend() {
+    if (!this.canAscend()) return;
+    const rewards = this.getAscendRewards();
+    // Show ascend overlay
+    const summary = document.getElementById("ascend-summary");
+    let text = `<p>Wave ${this.wave} 到達！</p>`;
+    text += `<div class="ascend-rewards">`;
+    text += `<div class="ascend-reward-item">⚔️ 基礎ダメージ +${rewards.bonusDmg}</div>`;
+    if (rewards.bonusHand > 0) {
+      text += `<div class="ascend-reward-item">🃏 手札枠 +${rewards.bonusHand}</div>`;
+    }
+    text += `</div>`;
+    text += `<p class="ascend-flavor">全てを捨て、より強く生まれ変わる</p>`;
+    summary.innerHTML = text;
+    document.getElementById("ascend-overlay").classList.remove("hidden");
+  },
+
+  confirmAscend() {
+    const rewards = this.getAscendRewards();
+    if (this.wave > this.bestWave) this.bestWave = this.wave;
+    this.ascendCount++;
+    this.ascendBonusDmg += rewards.bonusDmg;
+    this.ascendBonusHand += rewards.bonusHand;
+    document.getElementById("ascend-overlay").classList.add("hidden");
+    this.resetRun();
+    this.render();
+  },
+
   // ---- VFX ----
   showFloatingNumber(amount) {
     const container = document.getElementById("floating-numbers");
@@ -316,6 +376,30 @@ const game = {
     document.getElementById("wave-display").textContent = `Wave ${this.wave}`;
     document.getElementById("damage-display").textContent = `⚔️ ${dmg} dmg`;
     document.getElementById("defeated-display").textContent = `💀 ${this.monstersDefeated} 体撃破`;
+    document.getElementById("ascend-count-display").textContent = `🌟 ${this.ascendCount} 覚醒`;
+
+    // Ascend button
+    const ascBtn = document.getElementById("ascend-btn");
+    const ascDesc = document.getElementById("ascend-desc");
+    if (this.canAscend()) {
+      ascBtn.disabled = false;
+      const rewards = this.getAscendRewards();
+      ascDesc.textContent = `基礎ダメージ +${rewards.bonusDmg}${rewards.bonusHand > 0 ? `、手札 +${rewards.bonusHand}` : ""} を得てリスタート`;
+    } else {
+      ascBtn.disabled = true;
+      ascDesc.textContent = `Wave ${this.ascendMinWave} 到達で解放`;
+    }
+
+    // Ascend permanent bonuses display
+    const bonusEl = document.getElementById("ascend-bonuses");
+    if (this.ascendBonusDmg > 0 || this.ascendBonusHand > 0) {
+      let parts = [];
+      if (this.ascendBonusDmg > 0) parts.push(`⚔️+${this.ascendBonusDmg}`);
+      if (this.ascendBonusHand > 0) parts.push(`🃏+${this.ascendBonusHand}`);
+      bonusEl.textContent = `永続ボーナス: ${parts.join("  ")}`;
+    } else {
+      bonusEl.textContent = "";
+    }
 
     // Monster
     if (this.monster) {
@@ -380,6 +464,8 @@ const game = {
 // ========== Event Listeners ==========
 document.getElementById("monster-area").addEventListener("click", () => game.clickMonster());
 document.getElementById("skip-reward-btn").addEventListener("click", () => game.skipReward());
+document.getElementById("ascend-btn").addEventListener("click", () => game.startAscend());
+document.getElementById("ascend-confirm-btn").addEventListener("click", () => game.confirmAscend());
 
 // ========== Start ==========
 game.init();

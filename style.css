@@ -359,3 +359,132 @@ header h1 {
   background: #555;
   color: #fff;
 }
+
+/* ========== Ascend Area ========== */
+#ascend-area {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+#ascend-btn {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 2px solid #555;
+  border-radius: 10px;
+  color: #888;
+  cursor: not-allowed;
+  transition: all 0.3s;
+}
+
+#ascend-btn:not(:disabled) {
+  border-color: #ffd700;
+  background: linear-gradient(135deg, #2a1a00, #3d2800);
+  color: #ffd700;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+  animation: ascendGlow 2s ease-in-out infinite;
+}
+
+#ascend-btn:not(:disabled):hover {
+  box-shadow: 0 0 24px rgba(255, 215, 0, 0.5);
+  transform: scale(1.02);
+}
+
+@keyframes ascendGlow {
+  0%, 100% { box-shadow: 0 0 12px rgba(255, 215, 0, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
+}
+
+.ascend-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.ascend-desc {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+#ascend-bonuses {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #ffd700;
+}
+
+/* ========== Ascend Overlay ========== */
+#ascend-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.3s;
+}
+
+#ascend-overlay.hidden {
+  display: none;
+}
+
+#ascend-box {
+  background: linear-gradient(145deg, #1a1a2e, #0f3460);
+  border: 2px solid #ffd700;
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+}
+
+#ascend-box h2 {
+  color: #ffd700;
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+}
+
+#ascend-summary p {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.ascend-rewards {
+  margin: 16px 0;
+}
+
+.ascend-reward-item {
+  font-size: 1.2rem;
+  color: #ffd700;
+  padding: 6px 0;
+}
+
+.ascend-flavor {
+  color: #888;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+#ascend-confirm-btn {
+  margin-top: 16px;
+  padding: 12px 36px;
+  background: linear-gradient(135deg, #ffd700, #f0a500);
+  color: #1a1a2e;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#ascend-confirm-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.5);
+}

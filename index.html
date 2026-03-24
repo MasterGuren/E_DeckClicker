@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>E_DeckClicker</title>
-  <link rel="stylesheet" href="style.css?v=0.2.0">
+  <link rel="stylesheet" href="style.css?v=0.3.0">
 </head>
 <body>
-  <div id="version">v0.2.0</div>
+  <div id="version">v0.3.0</div>
   <div id="app">
     <header>
       <h1>E_DeckClicker</h1>
@@ -15,6 +15,7 @@
         <span id="wave-display">Wave 1</span>
         <span id="damage-display">⚔️ 1 dmg</span>
         <span id="defeated-display">💀 0 体撃破</span>
+        <span id="ascend-count-display">🌟 0 覚醒</span>
       </div>
     </header>
 
@@ -28,6 +29,15 @@
         </div>
         <div id="monster-sprite"></div>
         <div id="floating-numbers"></div>
+      </section>
+
+      <!-- Ascend Button -->
+      <section id="ascend-area">
+        <button id="ascend-btn" disabled>
+          <div class="ascend-title">覚醒（アセンド）</div>
+          <div class="ascend-desc" id="ascend-desc">Wave 5 到達で解放</div>
+        </button>
+        <div id="ascend-bonuses"></div>
       </section>
 
       <!-- Deck Area -->
@@ -56,9 +66,18 @@
           <button id="skip-reward-btn">スキップ</button>
         </div>
       </div>
+
+      <!-- Ascend Overlay -->
+      <div id="ascend-overlay" class="hidden">
+        <div id="ascend-box">
+          <h2>覚醒！</h2>
+          <div id="ascend-summary"></div>
+          <button id="ascend-confirm-btn">新たな旅へ</button>
+        </div>
+      </div>
     </main>
   </div>
 
-  <script src="game.js?v=0.2.0"></script>
+  <script src="game.js?v=0.3.0"></script>
 </body>
 </html>
