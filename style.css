@@ -41,7 +41,7 @@ header h1 {
 #stats {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
   font-size: 1.1rem;
 }
@@ -52,30 +52,78 @@ header h1 {
   border-radius: 8px;
 }
 
-/* Click Area */
-#click-area {
+/* ========== Monster Area ========== */
+#monster-area {
   text-align: center;
   margin-bottom: 24px;
-  position: relative;
-}
-
-#click-btn {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  border: 4px solid #e94560;
-  background: linear-gradient(145deg, #e94560, #c23152);
-  color: white;
-  font-size: 1.8rem;
-  font-weight: bold;
+  padding: 20px;
+  background: #16213e;
+  border-radius: 12px;
   cursor: pointer;
-  transition: transform 0.08s, box-shadow 0.08s;
-  box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-#click-btn:active {
-  transform: scale(0.93);
-  box-shadow: 0 2px 8px rgba(233, 69, 96, 0.3);
+#monster-area:active #monster-sprite {
+  transform: scale(0.92);
+}
+
+#monster-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #ff6b6b;
+}
+
+#hp-bar-container {
+  width: 80%;
+  max-width: 400px;
+  height: 28px;
+  background: #333;
+  border-radius: 14px;
+  margin: 0 auto 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+#hp-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #e94560, #ff6b6b);
+  border-radius: 14px;
+  transition: width 0.15s ease-out;
+}
+
+#hp-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+#monster-sprite {
+  font-size: 5rem;
+  line-height: 1;
+  transition: transform 0.08s;
+}
+
+#monster-sprite.shake {
+  animation: monsterShake 0.2s ease-out;
+}
+
+@keyframes monsterShake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
 }
 
 #floating-numbers {
@@ -90,11 +138,12 @@ header h1 {
 
 .float-number {
   position: absolute;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #ffd700;
   animation: floatUp 1s ease-out forwards;
   pointer-events: none;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
 
 @keyframes floatUp {
@@ -102,7 +151,7 @@ header h1 {
   100% { opacity: 0; transform: translateY(-80px); }
 }
 
-/* Deck Area */
+/* ========== Deck Area ========== */
 #deck-area {
   background: #16213e;
   border-radius: 12px;
@@ -159,6 +208,7 @@ header h1 {
   min-height: 110px;
 }
 
+/* ========== Cards ========== */
 .card {
   width: 110px;
   min-height: 140px;
@@ -180,9 +230,31 @@ header h1 {
 }
 
 .card.used {
-  opacity: 0.4;
+  opacity: 0.35;
   pointer-events: none;
   border-color: #333;
+}
+
+/* Rarity borders */
+.card.rarity-common {
+  border-color: #53a8b6;
+}
+.card.rarity-rare {
+  border-color: #a855f7;
+  box-shadow: 0 0 6px rgba(168, 85, 247, 0.2);
+}
+.card.rarity-legendary {
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.card.rarity-rare:hover {
+  border-color: #c084fc;
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.4);
+}
+.card.rarity-legendary:hover {
+  border-color: #ffe44d;
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.5);
 }
 
 .card-name {
@@ -204,90 +276,86 @@ header h1 {
   flex: 1;
 }
 
-.card-cost {
-  font-size: 0.7rem;
+.card-rarity {
+  font-size: 0.6rem;
   text-align: center;
-  color: #ffd700;
+  font-weight: bold;
+  padding: 2px 0;
+  border-radius: 4px;
 }
 
-#deck-controls {
-  margin-top: 12px;
-  text-align: center;
+.rarity-common .card-rarity { color: #53a8b6; }
+.rarity-rare .card-rarity { color: #a855f7; }
+.rarity-legendary .card-rarity { color: #ffd700; }
+
+/* ========== Reward Overlay ========== */
+#reward-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.3s;
 }
 
-#end-turn-btn {
-  padding: 10px 28px;
-  background: #533483;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
+#reward-overlay.hidden {
+  display: none;
 }
 
-#end-turn-btn:hover {
-  background: #6c44a2;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Shop */
-#shop-area {
+#reward-box {
   background: #16213e;
-  border-radius: 12px;
-  padding: 16px;
+  border: 2px solid #e94560;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
 }
 
-#shop-area h2 {
-  text-align: center;
-  margin-bottom: 12px;
+#reward-box h2 {
   color: #ffd700;
+  margin-bottom: 16px;
   font-size: 1.3rem;
 }
 
-#shop-cards {
+#reward-cards {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 12px;
   justify-content: center;
-  margin-bottom: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
 
-.shop-card {
-  width: 120px;
+.reward-card {
   min-height: 160px;
-  background: #0f3460;
-  border: 2px solid #ffd700;
-  border-radius: 10px;
-  padding: 8px;
-  cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  width: 120px;
 }
 
-.shop-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+.reward-card:hover {
+  transform: translateY(-8px) scale(1.05);
 }
 
-.shop-card.too-expensive {
-  opacity: 0.5;
-  border-color: #555;
-}
-
-#refresh-shop-btn {
-  display: block;
-  margin: 0 auto;
-  padding: 8px 20px;
-  background: #2a6041;
-  color: white;
-  border: none;
+#skip-reward-btn {
+  padding: 8px 24px;
+  background: #444;
+  color: #aaa;
+  border: 1px solid #666;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
 }
 
-#refresh-shop-btn:hover {
-  background: #358354;
+#skip-reward-btn:hover {
+  background: #555;
+  color: #fff;
 }
