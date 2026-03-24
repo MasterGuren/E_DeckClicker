@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>E_DeckClicker</title>
-  <link rel="stylesheet" href="style.css?v=0.3.0">
+  <link rel="stylesheet" href="style.css?v=0.4.0">
 </head>
 <body>
-  <div id="version">v0.3.0</div>
+  <div id="version">v0.4.0</div>
   <div id="app">
     <header>
       <h1>E_DeckClicker</h1>
@@ -29,6 +29,19 @@
         </div>
         <div id="monster-sprite"></div>
         <div id="floating-numbers"></div>
+      </section>
+
+      <!-- Energy Bar -->
+      <section id="energy-area">
+        <div id="energy-bar-container">
+          <div id="energy-label">ENERGY</div>
+          <div id="energy-count"><span id="energy-text">0</span></div>
+          <div id="energy-charge-bar">
+            <div id="energy-fill"></div>
+          </div>
+          <div id="energy-charge-label">次のエナジーまで</div>
+        </div>
+        <button id="draw-btn" disabled>ドロー (1⚡)</button>
       </section>
 
       <!-- Ascend Button -->
@@ -78,6 +91,6 @@
     </main>
   </div>
 
-  <script src="game.js?v=0.3.0"></script>
+  <script src="game.js?v=0.4.0"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@ const CARD_DEFS = {
     name: "ストライク",
     icon: "⚔️",
     desc: "クリックダメージ +1",
+    cost: 1,
     rarity: "common",
     effect(game) { game.dmgBonus += 1; },
   },
@@ -12,6 +13,7 @@ const CARD_DEFS = {
     name: "ガード",
     icon: "🛡️",
     desc: "カードを1枚引く",
+    cost: 1,
     rarity: "common",
     effect(game) { game.drawCards(1); },
   },
@@ -21,6 +23,7 @@ const CARD_DEFS = {
     name: "ヘビーストライク",
     icon: "🔨",
     desc: "クリックダメージ +3",
+    cost: 2,
     rarity: "common",
     effect(game) { game.dmgBonus += 3; },
   },
@@ -28,6 +31,7 @@ const CARD_DEFS = {
     name: "クイックドロー",
     icon: "📥",
     desc: "カードを2枚引く",
+    cost: 1,
     rarity: "common",
     effect(game) { game.drawCards(2); },
   },
@@ -35,6 +39,7 @@ const CARD_DEFS = {
     name: "バッシュ",
     icon: "💥",
     desc: "即座に 8 ダメージ",
+    cost: 2,
     rarity: "common",
     effect(game) { game.dealDirectDamage(8); },
   },
@@ -42,8 +47,17 @@ const CARD_DEFS = {
     name: "研ぎ澄ます",
     icon: "🔪",
     desc: "クリックダメージ +2",
+    cost: 1,
     rarity: "common",
     effect(game) { game.dmgBonus += 2; },
+  },
+  surge: {
+    name: "サージ",
+    icon: "🔋",
+    desc: "エナジー +2",
+    cost: 0,
+    rarity: "common",
+    effect(game) { game.energy += 2; },
   },
 
   // --- レア ---
@@ -51,6 +65,7 @@ const CARD_DEFS = {
     name: "レイジ",
     icon: "🔥",
     desc: "クリックダメージ x2",
+    cost: 2,
     rarity: "rare",
     effect(game) { game.dmgMultiplier *= 2; },
   },
@@ -58,6 +73,7 @@ const CARD_DEFS = {
     name: "コンボストライク",
     icon: "⚡",
     desc: "使ったカード数 x3 ダメージ",
+    cost: 1,
     rarity: "rare",
     effect(game) { game.dealDirectDamage(game.cardsPlayedThisFight * 3); },
   },
@@ -65,6 +81,7 @@ const CARD_DEFS = {
     name: "アーセナル",
     icon: "🎒",
     desc: "カードを3枚引く",
+    cost: 2,
     rarity: "rare",
     effect(game) { game.drawCards(3); },
   },
@@ -72,6 +89,7 @@ const CARD_DEFS = {
     name: "エクスキュート",
     icon: "🗡️",
     desc: "敵の減ったHP分ダメージ",
+    cost: 2,
     rarity: "rare",
     effect(game) {
       const lost = game.monster.maxHp - game.monster.hp;
@@ -81,9 +99,18 @@ const CARD_DEFS = {
   berserk: {
     name: "バーサーク",
     icon: "😤",
-    desc: "クリックダメージ +5、被ダメ+1",
+    desc: "クリックダメージ +5",
+    cost: 3,
     rarity: "rare",
     effect(game) { game.dmgBonus += 5; },
+  },
+  energyBurst: {
+    name: "エナジーバースト",
+    icon: "💫",
+    desc: "エナジー +4",
+    cost: 0,
+    rarity: "rare",
+    effect(game) { game.energy += 4; },
   },
 
   // --- レジェンド ---
@@ -91,6 +118,7 @@ const CARD_DEFS = {
     name: "殲滅",
     icon: "☄️",
     desc: "即座に 30 ダメージ",
+    cost: 3,
     rarity: "legendary",
     effect(game) { game.dealDirectDamage(30); },
   },
@@ -98,6 +126,7 @@ const CARD_DEFS = {
     name: "無限刃",
     icon: "♾️",
     desc: "クリックダメージ x3",
+    cost: 3,
     rarity: "legendary",
     effect(game) { game.dmgMultiplier *= 3; },
   },
@@ -128,6 +157,12 @@ const game = {
   handSize: 5,
   bestWave: 0,
 
+  // Energy
+  energy: 0,
+  clickCount: 0,
+  clicksPerEnergy: 10,
+  drawCost: 1,
+
   monster: null,
 
   // Deck
@@ -141,9 +176,9 @@ const game = {
 
   // Ascend (prestige)
   ascendCount: 0,
-  ascendBonusDmg: 0,     // permanent +damage from ascends
-  ascendBonusHand: 0,    // permanent +hand size from ascends
-  ascendMinWave: 5,      // minimum wave to ascend
+  ascendBonusDmg: 0,
+  ascendBonusHand: 0,
+  ascendMinWave: 5,
 
   init() {
     this.resetRun();
@@ -157,6 +192,8 @@ const game = {
     this.cardsPlayedThisFight = 0;
     this.baseDamage = 1 + this.ascendBonusDmg;
     this.handSize = 5 + this.ascendBonusHand;
+    this.energy = 0;
+    this.clickCount = 0;
     this.hand = [];
     this.discardPile = [];
 
@@ -198,6 +235,13 @@ const game = {
     this.showFloatingNumber(dmg);
     this.shakeMonster();
 
+    // Energy from clicks
+    this.clickCount++;
+    if (this.clickCount >= this.clicksPerEnergy) {
+      this.clickCount = 0;
+      this.energy++;
+    }
+
     if (this.monster.hp <= 0) {
       this.onMonsterDefeated();
     }
@@ -218,10 +262,19 @@ const game = {
     this.showReward();
   },
 
+  // ---- Energy Draw ----
+  energyDraw() {
+    if (this.energy < this.drawCost) return;
+    if (this.isRewardPhase) return;
+    if (this.drawPile.length === 0 && this.discardPile.length === 0) return;
+    this.energy -= this.drawCost;
+    this.drawCards(1);
+    this.render();
+  },
+
   // ---- Reward Phase ----
   showReward() {
     this.isRewardPhase = true;
-    // Pick 3 random reward cards (weighted by rarity)
     const pool = this.getRewardPool();
     this.rewardChoices = [];
     for (let i = 0; i < 3; i++) {
@@ -302,10 +355,12 @@ const game = {
     const card = this.hand[index];
     if (!card || card.used || this.isRewardPhase) return;
     if (this.monster && this.monster.hp <= 0) return;
+    const def = CARD_DEFS[card.id];
+    if (def.cost > this.energy) return; // not enough energy
+    this.energy -= def.cost;
     card.used = true;
     this.cardsPlayedThisFight++;
-    const def = CARD_DEFS[card.id];
-    if (def && def.effect) def.effect(this);
+    if (def.effect) def.effect(this);
     this.render();
   },
 
@@ -315,7 +370,6 @@ const game = {
   },
 
   getAscendRewards() {
-    // Rewards scale with how far you got
     const bonusDmg = Math.floor(this.wave / 5);
     const bonusHand = this.wave >= 15 ? 1 : 0;
     return { bonusDmg, bonusHand };
@@ -324,7 +378,6 @@ const game = {
   startAscend() {
     if (!this.canAscend()) return;
     const rewards = this.getAscendRewards();
-    // Show ascend overlay
     const summary = document.getElementById("ascend-summary");
     let text = `<p>Wave ${this.wave} 到達！</p>`;
     text += `<div class="ascend-rewards">`;
@@ -364,7 +417,7 @@ const game = {
   shakeMonster() {
     const sprite = document.getElementById("monster-sprite");
     sprite.classList.remove("shake");
-    void sprite.offsetWidth; // reflow
+    void sprite.offsetWidth;
     sprite.classList.add("shake");
   },
 
@@ -377,6 +430,20 @@ const game = {
     document.getElementById("damage-display").textContent = `⚔️ ${dmg} dmg`;
     document.getElementById("defeated-display").textContent = `💀 ${this.monstersDefeated} 体撃破`;
     document.getElementById("ascend-count-display").textContent = `🌟 ${this.ascendCount} 覚醒`;
+
+    // Energy display
+    const energyFill = document.getElementById("energy-fill");
+    const energyText = document.getElementById("energy-text");
+    const pctToNext = (this.clickCount / this.clicksPerEnergy) * 100;
+    energyFill.style.width = `${pctToNext}%`;
+    energyText.textContent = `${this.energy}`;
+
+    // Draw button
+    const drawBtn = document.getElementById("draw-btn");
+    const canDraw = this.energy >= this.drawCost &&
+      (this.drawPile.length > 0 || this.discardPile.length > 0) &&
+      !this.isRewardPhase;
+    drawBtn.disabled = !canDraw;
 
     // Ascend button
     const ascBtn = document.getElementById("ascend-btn");
@@ -426,15 +493,19 @@ const game = {
     handEl.innerHTML = "";
     this.hand.forEach((card, i) => {
       const def = CARD_DEFS[card.id];
+      const canPlay = !card.used && this.energy >= def.cost &&
+        !(this.monster && this.monster.hp <= 0) && !this.isRewardPhase;
       const el = document.createElement("div");
-      const rarityClass = def.rarity ? ` rarity-${def.rarity}` : "";
-      el.className = `card${card.used ? " used" : ""}${rarityClass}`;
+      const rarityClass = ` rarity-${def.rarity}`;
+      const noEnergy = !card.used && this.energy < def.cost ? " no-energy" : "";
+      el.className = `card${card.used ? " used" : ""}${rarityClass}${noEnergy}`;
       el.innerHTML = `
+        <div class="card-cost-badge">${def.cost}</div>
         <div class="card-icon">${def.icon}</div>
         <div class="card-name">${def.name}</div>
         <div class="card-desc">${def.desc}</div>
       `;
-      if (!card.used) {
+      if (canPlay) {
         el.addEventListener("click", () => this.playCard(i));
       }
       handEl.appendChild(el);
@@ -449,6 +520,7 @@ const game = {
         const el = document.createElement("div");
         el.className = `card reward-card rarity-${def.rarity}`;
         el.innerHTML = `
+          <div class="card-cost-badge">${def.cost}</div>
           <div class="card-icon">${def.icon}</div>
           <div class="card-name">${def.name}</div>
           <div class="card-desc">${def.desc}</div>
@@ -466,6 +538,7 @@ document.getElementById("monster-area").addEventListener("click", () => game.cli
 document.getElementById("skip-reward-btn").addEventListener("click", () => game.skipReward());
 document.getElementById("ascend-btn").addEventListener("click", () => game.startAscend());
 document.getElementById("ascend-confirm-btn").addEventListener("click", () => game.confirmAscend());
+document.getElementById("draw-btn").addEventListener("click", () => game.energyDraw());
 
 // ========== Start ==========
 game.init();
