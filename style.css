@@ -12,6 +12,15 @@ body {
   min-height: 100vh;
 }
 
+#version {
+  position: fixed;
+  top: 8px;
+  right: 12px;
+  font-size: 0.75rem;
+  color: #666;
+  z-index: 1000;
+}
+
 #app {
   max-width: 900px;
   margin: 0 auto;
