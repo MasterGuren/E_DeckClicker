@@ -4,27 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>E_DeckClicker</title>
-  <link rel="stylesheet" href="style.css?v=0.1.0">
+  <link rel="stylesheet" href="style.css?v=0.4.0">
 </head>
 <body>
-  <div id="version">v0.1.0</div>
+  <div id="version">v0.4.0</div>
   <div id="app">
     <header>
       <h1>E_DeckClicker</h1>
       <div id="stats">
-        <span id="gold-display">💰 0 Gold</span>
-        <span id="click-power-display">⚡ 1x Click</span>
-        <span id="auto-display">🔄 0/s Auto</span>
-        <span id="turn-display">🃏 Turn 1</span>
+        <span id="wave-display">Wave 1</span>
+        <span id="damage-display">⚔️ 1 dmg</span>
+        <span id="defeated-display">💀 0 体撃破</span>
+        <span id="ascend-count-display">🌟 0 覚醒</span>
       </div>
     </header>
 
     <main>
-      <section id="click-area">
-        <button id="click-btn">CLICK!</button>
+      <!-- Monster Area -->
+      <section id="monster-area">
+        <div id="monster-name"></div>
+        <div id="hp-bar-container">
+          <div id="hp-bar"></div>
+          <div id="hp-text"></div>
+        </div>
+        <div id="monster-sprite"></div>
         <div id="floating-numbers"></div>
       </section>
 
+      <!-- Energy Bar -->
+      <section id="energy-area">
+        <div id="energy-bar-container">
+          <div id="energy-label">ENERGY</div>
+          <div id="energy-count"><span id="energy-text">0</span></div>
+          <div id="energy-charge-bar">
+            <div id="energy-fill"></div>
+          </div>
+          <div id="energy-charge-label">次のエナジーまで</div>
+        </div>
+        <button id="draw-btn" disabled>ドロー (1⚡)</button>
+      </section>
+
+      <!-- Ascend Button -->
+      <section id="ascend-area">
+        <button id="ascend-btn" disabled>
+          <div class="ascend-title">覚醒（アセンド）</div>
+          <div class="ascend-desc" id="ascend-desc">Wave 5 到達で解放</div>
+        </button>
+        <div id="ascend-bonuses"></div>
+      </section>
+
+      <!-- Deck Area -->
       <section id="deck-area">
         <div id="deck-info">
           <div class="pile" id="draw-pile">
@@ -40,19 +69,28 @@
             <div class="pile-count" id="discard-count">0</div>
           </div>
         </div>
-        <div id="deck-controls">
-          <button id="end-turn-btn">ターン終了 / 新しい手札を引く</button>
-        </div>
       </section>
 
-      <section id="shop-area">
-        <h2>ショップ</h2>
-        <div id="shop-cards"></div>
-        <button id="refresh-shop-btn">ショップ更新 (無料)</button>
-      </section>
+      <!-- Reward Overlay -->
+      <div id="reward-overlay" class="hidden">
+        <div id="reward-box">
+          <h2>報酬カードを選べ！</h2>
+          <div id="reward-cards"></div>
+          <button id="skip-reward-btn">スキップ</button>
+        </div>
+      </div>
+
+      <!-- Ascend Overlay -->
+      <div id="ascend-overlay" class="hidden">
+        <div id="ascend-box">
+          <h2>覚醒！</h2>
+          <div id="ascend-summary"></div>
+          <button id="ascend-confirm-btn">新たな旅へ</button>
+        </div>
+      </div>
     </main>
   </div>
 
-  <script src="game.js?v=0.1.0"></script>
+  <script src="game.js?v=0.4.0"></script>
 </body>
 </html>
